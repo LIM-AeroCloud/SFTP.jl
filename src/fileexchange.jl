@@ -51,7 +51,7 @@ function upload(
     #* Check remote and local path
     src = realpath(src)
     dst = joinpath(sftp, dst, "").path
-    isdir(sftp, dst) || throw(Base.IOError("$dst must be a directory", 1))
+    isdir(sftp, dst) || throw(Base.IOError("$dst must be a directory", Integer(EC_NOT_A_DIR)))
     path, base = splitdir(src)
     # Get conflicts with dst
     conflicts = readdir(sftp, dst, __test__)
@@ -135,7 +135,7 @@ function Base.download(
 )::String
     #* Check remote and local path
     base = basename(sftp, src)
-    isdir(dst) || throw(Base.IOError("$dst must be an existing directory", 1))
+    isdir(dst) || throw(Base.IOError("$dst must be an existing directory", Integer(EC_DIR_NOT_FOUND)))
     dst = realpath(dst)
     # Optionally, skip hidden
     ignore_hidden && startswith(base, hide_identifier) && return dst
@@ -198,7 +198,7 @@ array = download(fread, sftp, "data/matrix.csv")
 function Base.download(fcn::Function, sftp::Client, src::AbstractString)
     mktempdir() do path
         # Check if src is a file
-        isfile(sftp, src) || throw(Base.IOError("$src must be an existing file", 1))
+        isfile(sftp, src) || throw(Base.IOError("$src must be an existing file", Integer(EC_FILE_NOT_FOUND)))
         # Download file to temporary directory and return contents with help of fcn
         file = joinpath(path, basename(src))
         file = Downloads.download(string(change_uripath(sftp.uri, src, trailing_slash = false)),
@@ -327,7 +327,7 @@ function upload_file(
     ignore_hidden && filter!(!startswith(hide_identifier), files)
     if isnothing(force)
         !isempty(conflicts) && throw(Base.IOError("cannot overwrite existing path(s) \
-            $(join(joinpath.(sftp, dst, files) .|> cwd, ", ", " and "))", -1))
+            $(join(joinpath.(sftp, dst, files) .|> cwd, ", ", " and "))", Integer(EC_PATH_EXISTS)))
     elseif istrue(force)
         if isempty(__test__)
             rm.(sftp, joinpath.(sftp, dst, conflicts) .|> cwd,
@@ -404,7 +404,7 @@ function download_file(
     #* Prepare local and remote files
     if isnothing(force)
         !isempty(conflicts) && throw(Base.IOError("cannot overwrite existing path(s) \
-            $(join(joinpath.(dst, files), ", ", " and "))", -1))
+            $(join(joinpath.(dst, files), ", ", " and "))", Integer(EC_PATH_EXISTS)))
     elseif istrue(force)
         rm.(normpath.(joinpath.(dst, conflicts)), recursive = true, force = true)
     else

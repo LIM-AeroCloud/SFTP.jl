@@ -134,7 +134,6 @@ uri = URI("sftp://test.com/root/path")
         @test SFTP.cwd(sftp.uri) == "/pub/example/"
         @test_skip @test (@test_nowarn pwd(sftp)) == "/pub/example/"
         sftp.uri = SFTP.change_uripath(sftp.uri, "/foo/bar")
-        @show sftp.uri.path
         @test_throws SFTP.Downloads.RequestError pwd(sftp)
     end
     @test_throws Base.IOError SFTP.findbase(target_structs, "foo", "bar")
