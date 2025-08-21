@@ -6,6 +6,7 @@ module SFTP
 
 Error codes for SFTP connection and remote filesystem errors:
 
+    EC_INSTANTIATION_ERROR = -1
     EC_NOERROR = 0
     EC_ACCESS_DENIED = 1
     EC_NOT_A_FILE = 2
@@ -22,6 +23,7 @@ Error codes for SFTP connection and remote filesystem errors:
     EC_INVALID_SCAN = 13
 """
 @enum ErrorCode begin
+    EC_INSTANTIATION_ERROR = -1
     EC_NOERROR = 0
     EC_ACCESS_DENIED = 1
     EC_NOT_A_FILE = 2
@@ -55,7 +57,6 @@ include("client.jl")
 include("fileexchange.jl")
 include("filestats.jl")
 include("filesystem.jl")
-include("deprecated.jl")
 
 # Define API and export structs and functions
 @static if VERSION ≥ v"1.11"

@@ -14,10 +14,12 @@ files = readdir(sftp)
     @test sftp.uri.path == "/"
     @test sftp.username == "demo"
     @test sftp.password == "password"
-    sftp = SFTP.Client("sftp://test.rebex.net/foo/bar", "demo", "password")
-    @test sftp.uri.path == "/foo/bar"
-    sftp = SFTP.Client("sftp://test.rebex.net/foo/bar/", "demo", "password")
-    @test sftp.uri.path == "/foo/bar/"
+    sftp = SFTP.Client("sftp://test.rebex.net/pub/example", "demo", "password")
+    @test sftp.uri.path == "/pub/example"
+    sftp = SFTP.Client("sftp://test.rebex.net/pub/example/", "demo", "password")
+    @test sftp.uri.path == "/pub/example/"
+    @test_throws Base.IOError SFTP.Client("sftp://test.rebex.net", "demo", "pass")
+    @test_throws Base.IOError SFTP.change_uripath(sftp, "/foo")
     test_known_hosts()
 end
 
@@ -50,8 +52,6 @@ wd_closed = walkdir(sftp, "/pub/example/readme.txt")
     @test_throws SFTP.Downloads.RequestError mkdir(sftp, "/pub/example/foo")
     @test_throws SFTP.Downloads.RequestError mkpath(sftp, "/pub/example/foo")
     @test wd_closed.state == :closed
-    sftp_err = SFTP.Client("sftp://test.rebex.net", "demo", "pass")
-    @test_throws SFTP.Downloads.RequestError walkdir(sftp_err)
     @test wd_bu == wd_bottomup
     sftp.uri = URI("sftp://test.rebex.net")
     @test sftp.uri.path == ""
@@ -99,6 +99,7 @@ res = String(take!(io))
     @test isdir(st) == false
     @test islink(st) == false
     @test islink(sftp, "/pub/example/KeyGenerator.png") == false
+    @test_throws Base.IOError SFTP.Client("sftp://test.rebex.net/foo/", "demo", "password")
 end
 
 ## Test internal URI changes
@@ -123,18 +124,15 @@ uri = URI("sftp://test.com/root/path")
         @test SFTP.change_uripath(sftp, "/pub/example") == URI("sftp://test.rebex.net/pub/example/")
         @test SFTP.change_uripath(sftp, "/pub/example", "KeyGenerator.png") == URI("sftp://test.rebex.net/pub/example/KeyGenerator.png")
         @test SFTP.change_uripath(sftp, "..") == URI("sftp://test.rebex.net/pub/")
-        @test_throws Base.IOError SFTP.change_uripath(sftp, "/foo")
     end
     # Test type piracy avoidance
     @testset "URI methods" begin
         sftp = SFTP.Client("sftp://test.rebex.net", "demo", "password")
         @test SFTP.change_uripath(sftp.uri, "/a/b/c").path == "/a/b/c"
         cd(sftp, "/pub/example")
-        @test_skip @test_throws MethodError pwd(sftp.uri)
+        @test_throws MethodError pwd(sftp.uri)
         @test SFTP.cwd(sftp.uri) == "/pub/example/"
-        @test_skip @test (@test_nowarn pwd(sftp)) == "/pub/example/"
-        sftp.uri = SFTP.change_uripath(sftp.uri, "/foo/bar")
-        @test_throws SFTP.Downloads.RequestError pwd(sftp)
+        @test (@test_nowarn pwd(sftp)) == "/pub/example/"
     end
     @test_throws Base.IOError SFTP.findbase(target_structs, "foo", "bar")
 end
@@ -177,7 +175,3 @@ end
         @test_throws Base.IOError download(f, sftp, "pub")
     end
 end
-
-
-## Deprecations
-include("deprecated.jl")
