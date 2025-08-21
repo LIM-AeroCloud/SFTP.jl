@@ -55,7 +55,6 @@ include("client.jl")
 include("fileexchange.jl")
 include("filestats.jl")
 include("filesystem.jl")
-include("deprecated.jl")
 
 # Define API and export structs and functions
 @static if VERSION ≥ v"1.11"

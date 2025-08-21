@@ -177,7 +177,3 @@ end
         @test_throws Base.IOError download(f, sftp, "pub")
     end
 end
-
-
-## Deprecations
-include("deprecated.jl")

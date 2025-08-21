@@ -17,10 +17,6 @@ for more details on the `URI` struct.
 
 ## Navigating server paths
 
-!!! warning "Deprecation warning"
-    The [`pwd`](@ref) method for `URI` structs will be deprecated in v0.2.0 and
-    replaced by and internal `cwd` method to avoid type piracy.
-
 ```@docs
 pwd
 cd(::SFTP.Client, ::AbstractString)
@@ -33,10 +29,6 @@ walkdir(::SFTP.Client, ::AbstractString; kwargs...)
 ```
 
 ## Analyse and manipulate server paths
-
-!!! warning "Deprecation warning"
-    All methods using `URI` instead of [`SFTP.Client`](@ref) in [`basename`](@ref)
-    and [`splitdir`](@ref) will be deprecated in v0.2.0 to avoid type piracy.
 
 !!! warning "Known issue"
     [URIs'](https://github.com/JuliaWeb/URIs.jl.git) `joinpath` method currently

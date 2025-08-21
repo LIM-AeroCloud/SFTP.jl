@@ -8,6 +8,14 @@ The format of the release notes follows [Keep a Changelog](https://keepachangelo
 ### Changed
 
 - Added Enum `ErrorCode` for revised error handling with updated error codes ([#21])
+- `pwd(::SFTP.Client)`: no validity checks of uri path. This should be done during instantiation
+  of the `SFTP.Client` ([#22])
+
+### Removed
+
+- `pwd(::URI)`, `splitdir(uri::URI, path::AbstractString=".")`, and
+  `basename(uri::URI, path::AbstractString=".")`: only methods with `SFTP.Client` allowed
+  to avoid type piracy ([#22])
 
 ### Fixed
 
