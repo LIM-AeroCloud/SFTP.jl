@@ -1,20 +1,15 @@
 ## Base filesystem functions
-#=
-#ISSUE include in v0.2.0 after deprecation of previous method
 
 """
     pwd(sftp::SFTP.Client) -> String
 
-    Get the current path of the `sftp` client. No checks are performed,
-    whether the path actially exists. This should have been done during the
-    instantiation of the `sftp` client.
+Get the current path of the `sftp` client.
 
-    see also: [`cd`](@ref cd(::SFTP.Client, ::AbstractString)),
-    [`mv`](@ref mv(::SFTP.Client, ::AbstractString, ::AbstractString; force::Bool=false)),
-    [`rm`](@ref rm(::SFTP.Client, ::AbstractString; recursive::Bool=false, force::Bool=false))
-    """
-    Base.pwd(sftp::Client)::String = isempty(sftp.uri.path) ? "/" : sftp.uri.path
- =#
+see also: [`cd`](@ref cd(::SFTP.Client, ::AbstractString)),
+[`mv`](@ref mv(::SFTP.Client, ::AbstractString, ::AbstractString; force::Bool=false)),
+[`rm`](@ref rm(::SFTP.Client, ::AbstractString; recursive::Bool=false, force::Bool=false))
+"""
+Base.pwd(sftp::Client)::String = isempty(sftp.uri.path) ? "/" : sftp.uri.path
 
 
 """
@@ -41,7 +36,7 @@ function Base.cd(sftp::Client, dir::AbstractString)::Nothing
         sftp.uri = change_uripath(sftp.uri, dir, trailing_slash=true)
         # Test validity of new path
         isadir = analyse_path(sftp, sftp.uri.path)
-        isadir || throw(Base.IOError("$dir is not a directory", -1))
+        isadir || throw(Base.IOError("$dir is not a directory", Integer(EC_NOT_A_DIR)))
     catch
         # Ensure previous url on error
         sftp.uri = prev_url
@@ -105,7 +100,7 @@ function Base.mv(
             # Clean up src
             rm(sftp, src; recursive=true, force=true)
         else
-            throw(Base.IOError("cannot move non-existing file", -1))
+            throw(Base.IOError("cannot move non-existing file", Integer(EC_FILE_NOT_FOUND)))
         end
     end
 end
@@ -153,7 +148,8 @@ function Base.rm(sftp::Client, path::AbstractString; recursive::Bool=false, forc
                 if isempty(content)
                     ftp_command(sftp, "rmdir '$(unescape_joinpath(sftp, path))'")
                 elseif !force
-                    throw(Base.IOError("cannot delete non-empty folder without recursive flag", -1))
+                    throw(Base.IOError("cannot delete non-empty folder without recursive flag",
+                        Integer(EC_NONEMPTY_DIR)))
                 end
             catch
                 if force
@@ -184,13 +180,13 @@ function Base.mkdir(sftp::Client, dir::AbstractString)::String
     if isadir
         stats = statscan(sftp, uri.path)
         if basename(dir) in [s.desc for s in stats]
-            throw(Base.IOError("$dir already exists", -2))
+            throw(Base.IOError("$dir already exists", Integer(EC_DIR_EXISTS)))
         else
             mkpath(sftp, uripath)
         end
     else
         # ¡This should not be reached and covered by error handling of analyse_path!
-        throw(Base.IOError("$dir is not a directory", -1))
+        throw(Base.IOError("$dir is not a directory", Integer(EC_NOT_A_DIR)))
     end
     return dir
 end
@@ -510,8 +506,8 @@ function symlink_target!(
     end
     # Get stats of link target
     target = try
-        target = split(stats.root, "->")[2] |> strip |> string
-        joinpath(sftp.uri.path, root, target)
+        src, target = split(stats.root, "->") .|> strip .|> string
+        joinpath(sftp.uri.path, src, target)
     catch
         throw(ArgumentError("the link root of the StatsStruct has the wrong format"))
     end
@@ -547,7 +543,7 @@ function analyse_path(sftp::Client, root::AbstractString)::Bool
     files, dirs = Vector{String}(), Vector{String}()
     try symlink_target!(sftp, stats, root, dirs, files, true)
     catch error
-        if error ≠ Downloads.RequestError && error.code ≠ 9
+        if !(error isa Downloads.RequestError && error.code == CURLE_REMOTE_ACCESS_DENIED)
             rethrow(error)
         end
         contents = readdir(sftp, root)
@@ -566,7 +562,7 @@ function analyse_path(sftp::Client, root::AbstractString)::Bool
     elseif length(files) == 1
         false
     else
-        Base.IOError("unknown link target", -2)
+        throw(Base.IOError("unknown link target", Integer(EC_BROKEN_LINK)))
     end
 end
 

@@ -23,6 +23,7 @@ makedocs(
         "Home" => "index.md",
         "Server" => "server.md",
         "Filesystem" => "filesystem.md",
+        "Error handling" => "error.md",
         "Troubleshooting" => "troubleshooting.md",
         "Release notes" => "release-notes.md",
         "Index" => "register.md"

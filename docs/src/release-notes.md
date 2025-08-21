@@ -7,6 +7,26 @@ EditURL = "https://github.com/LIM-AeroCloud/SFTP.jl/blob/master/CHANGELOG.md"
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 The format of the release notes follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [v0.2.0](https://github.com/LIM-AeroCloud/SFTP.jl/releases/tag/v0.2.0) - 2025-08-22
+
+### Changed
+
+- Added Enum `ErrorCode` for revised error handling with updated error codes ([#21](https://github.com/LIM-AeroCloud/SFTP.jl/issues/21))
+- Invalid paths give an `Base.IOError` during instatiation of an `SFTP.Client`
+- `pwd(::SFTP.Client)`: no validity checks of uri path. This should be done during instantiation
+  of the `SFTP.Client` ([#22](https://github.com/LIM-AeroCloud/SFTP.jl/issues/22))
+
+### Removed
+
+- `pwd(::URI)`, `splitdir(uri::URI, path::AbstractString=".")`, and
+  `basename(uri::URI, path::AbstractString=".")`: only methods with `SFTP.Client` allowed
+  to avoid type piracy ([#22](https://github.com/LIM-AeroCloud/SFTP.jl/issues/22))
+
+### Fixed
+
+- Link targets are displayed as absolute paths again. This bug was introduced after switching
+  internally from split to URIs.splitpath, which does not consider root folders ([#18](https://github.com/LIM-AeroCloud/SFTP.jl/issues/18)).
+
 ## [v0.1.2](https://github.com/LIM-AeroCloud/SFTP.jl/releases/tag/v0.1.2) - 2025-05-31
 
 ### Deprecated

@@ -69,6 +69,22 @@ mutable struct Client
     verbose::Bool
     public_key_file::String
     private_key_file::String
+
+    function Client(
+        downloader::Downloader,
+        uri::URI,
+        username::String,
+        password::String,
+        disable_verify_peer::Bool,
+        disable_verify_host::Bool,
+        verbose::Bool,
+        public_key_file::String,
+        private_key_file::String
+    )::Client
+        client = new(downloader, uri, username, password, disable_verify_peer, disable_verify_host, verbose, public_key_file, private_key_file)
+        ispath(client, client.uri.path) || throw(Base.IOError("Cannot instantiate client; check user credentials and given uri path", Integer(EC_INSTANTIATION_ERROR)))
+        return client
+    end
 end
 
 
@@ -114,6 +130,7 @@ struct StatStruct
             if length(linkparts) == 2
                 desc = linkparts[1]
                 path = URIs.splitpath(linkparts[2])
+                startswith(linkparts[2], "/") && pushfirst!(path, "") # ISSUE: URIs omits root slash in splitpath
                 path = join(path[1:end - 1], "/")
                 root *= " -> " * path
             end
@@ -181,7 +198,7 @@ end
 
 ## Overload Base functions
 
-Base.show(io::IO, sftp::Client)::Nothing =  println(io, "SFTP.Client(\"$(sftp.username)@$(sftp.uri.host)\")")
+Base.show(io::IO, sftp::Client)::Nothing = println(io, "SFTP.Client(\"$(sftp.username)@$(sftp.uri.host)\")")
 
 Base.broadcastable(sftp::Client) = Ref(sftp)
 
@@ -341,7 +358,7 @@ function findbase(stats::Vector{StatStruct}, base::AbstractString, path::Abstrac
     i = findfirst(isequal(base), pathnames)
     # Exception handling, if path is not found
     if isnothing(i)
-        throw(Base.IOError("$path does not exist", -1))
+        throw(Base.IOError("$path does not exist", Integer(EC_INVALID_SCAN)))
     end
     # Return index of base in stats
     return i
