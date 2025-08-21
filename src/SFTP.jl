@@ -21,8 +21,6 @@ Error codes for SFTP connection and remote filesystem errors:
     EC_BROKEN_LINK = 12
     EC_INVALID_SCAN = 13
 """
-ErrorCode
-
 @enum ErrorCode begin
     EC_NOERROR = 0
     EC_ACCESS_DENIED = 1
@@ -48,6 +46,9 @@ import Dates
 import Logging
 import Downloads: Downloader, Curl.Easy
 import URIs: URI
+
+# Curl error codes
+const CURLE_REMOTE_ACCESS_DENIED = 9
 
 # File includes
 include("client.jl")

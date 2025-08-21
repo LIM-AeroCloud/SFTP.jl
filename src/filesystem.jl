@@ -191,7 +191,7 @@ function Base.mkdir(sftp::Client, dir::AbstractString)::String
         end
     else
         # ¡This should not be reached and covered by error handling of analyse_path!
-        throw(Base.IOError("$dir is not a directory", Integer(NOT_A_DIR)))
+        throw(Base.IOError("$dir is not a directory", Integer(EC_NOT_A_DIR)))
     end
     return dir
 end
@@ -548,7 +548,7 @@ function analyse_path(sftp::Client, root::AbstractString)::Bool
     files, dirs = Vector{String}(), Vector{String}()
     try symlink_target!(sftp, stats, root, dirs, files, true)
     catch error
-        if !(error isa Downloads.RequestError && error.code == 9)
+        if !(error isa Downloads.RequestError && error.code == CURLE_REMOTE_ACCESS_DENIED)
             rethrow(error)
         end
         contents = readdir(sftp, root)
@@ -567,7 +567,7 @@ function analyse_path(sftp::Client, root::AbstractString)::Bool
     elseif length(files) == 1
         false
     else
-        Base.IOError("unknown link target", Integer(EC_BROKEN_LINK))
+        throw(Base.IOError("unknown link target", Integer(EC_BROKEN_LINK)))
     end
 end
 

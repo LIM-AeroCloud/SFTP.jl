@@ -7,7 +7,7 @@ The format of the release notes follows [Keep a Changelog](https://keepachangelo
 
 ### Changed
 
-- Added Enum `ErrorCode` for revised error handling with updated error codes ([#20])
+- Added Enum `ErrorCode` for revised error handling with updated error codes ([#21])
 
 ### Fixed
 
