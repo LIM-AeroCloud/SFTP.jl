@@ -8,6 +8,7 @@ The format of the release notes follows [Keep a Changelog](https://keepachangelo
 ### Changed
 
 - Added Enum `ErrorCode` for revised error handling with updated error codes ([#21])
+- Invalid paths give an `Base.IOError` during instatiation of an `SFTP.Client`
 - `pwd(::SFTP.Client)`: no validity checks of uri path. This should be done during instantiation
   of the `SFTP.Client` ([#22])
 

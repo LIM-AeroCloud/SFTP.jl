@@ -69,6 +69,22 @@ mutable struct Client
     verbose::Bool
     public_key_file::String
     private_key_file::String
+
+    function Client(
+        downloader::Downloader,
+        uri::URI,
+        username::String,
+        password::String,
+        disable_verify_peer::Bool,
+        disable_verify_host::Bool,
+        verbose::Bool,
+        public_key_file::String,
+        private_key_file::String
+    )::Client
+        client = new(downloader, uri, username, password, disable_verify_peer, disable_verify_host, verbose, public_key_file, private_key_file)
+        ispath(client, client.uri.path) || throw(Base.IOError("Cannot instantiate client; check user credentials and given uri path", Integer(EC_INSTANTIATION_ERROR)))
+        return client
+    end
 end
 
 
