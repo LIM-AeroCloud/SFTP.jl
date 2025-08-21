@@ -41,7 +41,7 @@ function Base.cd(sftp::Client, dir::AbstractString)::Nothing
         sftp.uri = change_uripath(sftp.uri, dir, trailing_slash=true)
         # Test validity of new path
         isadir = analyse_path(sftp, sftp.uri.path)
-        isadir || throw(Base.IOError("$dir is not a directory", -1))
+        isadir || throw(Base.IOError("$dir is not a directory", Integer(EC_NOT_A_DIR)))
     catch
         # Ensure previous url on error
         sftp.uri = prev_url
@@ -105,7 +105,7 @@ function Base.mv(
             # Clean up src
             rm(sftp, src; recursive=true, force=true)
         else
-            throw(Base.IOError("cannot move non-existing file", -1))
+            throw(Base.IOError("cannot move non-existing file", Integer(EC_FILE_NOT_FOUND)))
         end
     end
 end
@@ -153,7 +153,8 @@ function Base.rm(sftp::Client, path::AbstractString; recursive::Bool=false, forc
                 if isempty(content)
                     ftp_command(sftp, "rmdir '$(unescape_joinpath(sftp, path))'")
                 elseif !force
-                    throw(Base.IOError("cannot delete non-empty folder without recursive flag", -1))
+                    throw(Base.IOError("cannot delete non-empty folder without recursive flag",
+                        Integer(EC_NONEMPTY_DIR)))
                 end
             catch
                 if force
@@ -184,13 +185,13 @@ function Base.mkdir(sftp::Client, dir::AbstractString)::String
     if isadir
         stats = statscan(sftp, uri.path)
         if basename(dir) in [s.desc for s in stats]
-            throw(Base.IOError("$dir already exists", -2))
+            throw(Base.IOError("$dir already exists", Integer(EC_DIR_EXISTS)))
         else
             mkpath(sftp, uripath)
         end
     else
         # ¡This should not be reached and covered by error handling of analyse_path!
-        throw(Base.IOError("$dir is not a directory", -1))
+        throw(Base.IOError("$dir is not a directory", Integer(EC_NOT_A_DIR)))
     end
     return dir
 end
@@ -547,7 +548,7 @@ function analyse_path(sftp::Client, root::AbstractString)::Bool
     files, dirs = Vector{String}(), Vector{String}()
     try symlink_target!(sftp, stats, root, dirs, files, true)
     catch error
-        if error ≠ Downloads.RequestError && error.code ≠ 9
+        if !(error isa Downloads.RequestError && error.code == CURLE_REMOTE_ACCESS_DENIED)
             rethrow(error)
         end
         contents = readdir(sftp, root)
@@ -566,7 +567,7 @@ function analyse_path(sftp::Client, root::AbstractString)::Bool
     elseif length(files) == 1
         false
     else
-        Base.IOError("unknown link target", -2)
+        throw(Base.IOError("unknown link target", Integer(EC_BROKEN_LINK)))
     end
 end
 

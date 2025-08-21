@@ -5,6 +5,10 @@ The format of the release notes follows [Keep a Changelog](https://keepachangelo
 
 ## [Unreleased]
 
+### Changed
+
+- Added Enum `ErrorCode` for revised error handling with updated error codes ([#21])
+
 ### Fixed
 
 - Link targets are displayed as absolute paths again. This bug was introduced after switching

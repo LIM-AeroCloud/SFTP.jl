@@ -115,7 +115,6 @@ struct StatStruct
                 desc = linkparts[1]
                 path = URIs.splitpath(linkparts[2])
                 startswith(linkparts[2], "/") && pushfirst!(path, "") # ISSUE: URIs omits root slash in splitpath
-                @show linkparts[2], path
                 path = join(path[1:end - 1], "/")
                 root *= " -> " * path
             end
@@ -183,7 +182,7 @@ end
 
 ## Overload Base functions
 
-Base.show(io::IO, sftp::Client)::Nothing =  println(io, "SFTP.Client(\"$(sftp.username)@$(sftp.uri.host)\")")
+Base.show(io::IO, sftp::Client)::Nothing = println(io, "SFTP.Client(\"$(sftp.username)@$(sftp.uri.host)\")")
 
 Base.broadcastable(sftp::Client) = Ref(sftp)
 
@@ -343,7 +342,7 @@ function findbase(stats::Vector{StatStruct}, base::AbstractString, path::Abstrac
     i = findfirst(isequal(base), pathnames)
     # Exception handling, if path is not found
     if isnothing(i)
-        throw(Base.IOError("$path does not exist", -1))
+        throw(Base.IOError("$path does not exist", Integer(EC_INVALID_SCAN)))
     end
     # Return index of base in stats
     return i

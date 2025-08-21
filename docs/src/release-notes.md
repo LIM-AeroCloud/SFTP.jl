@@ -7,6 +7,17 @@ EditURL = "https://github.com/LIM-AeroCloud/SFTP.jl/blob/master/CHANGELOG.md"
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 The format of the release notes follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased]
+
+### Changed
+
+- Added Enum `ErrorCode` for revised error handling with updated error codes ([#20](https://github.com/LIM-AeroCloud/SFTP.jl/issues/20))
+
+### Fixed
+
+- Link targets are displayed as absolute paths again. This bug was introduced after switching
+  internally from split to URIs.splitpath, which does not consider root folders ([#18](https://github.com/LIM-AeroCloud/SFTP.jl/issues/18)).
+
 ## [v0.1.2](https://github.com/LIM-AeroCloud/SFTP.jl/releases/tag/v0.1.2) - 2025-05-31
 
 ### Deprecated
