@@ -47,6 +47,37 @@ sftp = SFTP.Client("sftp://mysitewhereIhaveACertificate.com", "myuser", "cert.pu
 # ssh-keygen -y  -f ./cert.pem. Save the output into "cert.pub". 
 ```
 
+## Development and Issues
+
+This project uses a pull request-based development workflow. All issues and features are tracked through pull requests rather than standalone GitHub issues.
+
+### Finding Issues and Pull Requests
+
+To view all issues and pull requests (including closed ones), you can:
+
+1. **Quick overview**: Run the bash script for a summary
+   ```bash
+   ./scripts/list_issues.sh
+   ```
+
+2. **Detailed listing**: Use the Python or Julia scripts
+   ```bash
+   python3 scripts/list_issues.py
+   # or
+   julia scripts/list_issues.jl
+   ```
+
+3. **Static reference**: Check [`ISSUES_SUMMARY.md`](ISSUES_SUMMARY.md) for a comprehensive list
+
+4. **GitHub interface**: Visit the [Issues page](https://github.com/LIM-AeroCloud/SFTP.jl/issues?q=is%3Aissue+is%3Aclosed) or [Pull Requests page](https://github.com/LIM-AeroCloud/SFTP.jl/pulls?q=is%3Apr+is%3Aclosed)
+
+### Issue References in Releases
+
+Key issues addressed in each release are documented in the [CHANGELOG](CHANGELOG.md):
+- **v0.1.1**: #8 (type piracy), #9 (dirname function), #10 (readdir path conversion)
+- **v0.1.2**: #13 (pwd deprecation), #14 (stat fallback)
+- **Unreleased**: #18 (link target paths)
+
 [docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
 [docs-stable-url]: https://LIM-AeroCloud.github.io/SFTP.jl/stable/
 
