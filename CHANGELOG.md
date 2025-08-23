@@ -3,6 +3,13 @@
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 The format of the release notes follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [UNRELEASED]
+
+## Changed
+
+- Documentation updates and fixes (improved installation instructions, removed all references to
+  URI type piracy)
+
 ## [v0.2.0] - 2025-08-22
 
 ### Changed

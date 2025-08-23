@@ -15,6 +15,7 @@ makedocs(
     sitename="SFTP.jl Documentation",
     checkdocs=:public,
     format=Documenter.HTML(;
+        prettyurls=false,
         canonical="https://LIM-AeroCloud.github.io/SFTP.jl",
         edit_link="dev",
         assets=String[],

@@ -9,8 +9,7 @@ functions, respectively, however, _SFTP.jl_'s functionality might be reduced.
 
 Several of the Filesystem functions return a `URI` struct from the
 [URIs package](https://github.com/JuliaWeb/URIs.jl.git) to represent the complete
-server address including the path on the server. `URI` structs are also accepted as
-input argument by serveral of _SFTP.jl_'s Filesystem functions.
+server address including the path on the server.
 For easier handling, the `URI` struct is exported by _SFTP.jl_ as well. See
 [URIs' documentation](https://docs.juliahub.com/URIs/eec2u/1.5.1/#URIs.URI)
 for more details on the `URI` struct.
