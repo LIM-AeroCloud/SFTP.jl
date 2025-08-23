@@ -22,12 +22,27 @@ to the typical Linux functionality exist to explore the SFTP server.
 
 ## SFTP Installation
 
-Install using the package manager:
+_SFTP.jl_ is an unregistered Julia package, but can be installed with the package manager:
 
-```julia
+```console
 julia> ]
 
-pkg> add SFTP
+pkg> add https://github.com/LIM-AeroCloud/SFTP.jl.git
+```
+
+By default, the development version will be install. To use released stable version switch to
+the `main` channel by installing _SFTP.jl_ with:
+
+```console
+pkg> add https://github.com/LIM-AeroCloud/SFTP.jl.git#main
+```
+
+The package is developed for MacOS and Linux, but can be used under Windows as well.
+It is tested against the long-term support version (LTS) of Julia, the latest stable version,
+and the nightly version. To run test on your system open the package manager and type `test`:
+
+```console
+pkg> test
 ```
 
 ## Contents
