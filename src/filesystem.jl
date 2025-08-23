@@ -391,7 +391,9 @@ updated path. Any `path` components prior to an absolute `path` are dropped.
 
 !!! note
     The `uri` field of the `sftp` client remains unaffected by joinpath.
-    Use `sftp.uri = joinpath(sftp, "new/path")` to update the URI on the `sftp` server.
+    Use `sftp.uri = joinpath(sftp, "new/path", "parts")` or
+    `cd(sftp, joinpath(sftp, joinpath("new/path", "parts")))` to update
+    the URI on the `sftp` server.
 """
 Base.joinpath(sftp::Client, path::AbstractString...)::URI = joinpath(sftp, string.(path...))
 Base.joinpath(sftp::Client, path::String...)::URI = joinpath(sftp.uri, path...)
