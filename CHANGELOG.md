@@ -3,6 +3,12 @@
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 The format of the release notes follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [UNRELEASED]
+
+### Fixed
+
+- make favicon on documention page appear (add favicon path in docs/make.jl; [#26])
+
 ## [v0.2.1] - 2025-08-23
 
 ## Changed
@@ -147,3 +153,4 @@ All changes for this released are documented in respect to this version.
 [#21]: https://github.com/LIM-AeroCloud/SFTP.jl/issues/21
 [#22]: https://github.com/LIM-AeroCloud/SFTP.jl/issues/22
 [#24]: https://github.com/LIM-AeroCloud/SFTP.jl/issues/24
+[#26]: https://github.com/LIM-AeroCloud/SFTP.jl/issues/26
