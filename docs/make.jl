@@ -15,16 +15,14 @@ makedocs(
     sitename="SFTP.jl Documentation",
     checkdocs=:public,
     format=Documenter.HTML(;
-        prettyurls=false,
         canonical="https://LIM-AeroCloud.github.io/SFTP.jl",
         edit_link="dev",
-        assets=String[],
+        assets=String["assets/favicon.ico"],
     ),
     pages=[
         "Home" => "index.md",
         "Server" => "server.md",
         "Filesystem" => "filesystem.md",
-        "Error handling" => "error.md",
         "Troubleshooting" => "troubleshooting.md",
         "Release notes" => "release-notes.md",
         "Index" => "register.md"
